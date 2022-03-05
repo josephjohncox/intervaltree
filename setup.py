@@ -28,12 +28,17 @@ from __future__ import absolute_import
 import io
 import os
 from sys import exit
-from setuptools import setup
+from distutils.core import setup
 from setuptools.command.test import test as TestCommand
 import subprocess
+from Cython.Build import cythonize
+import Cython.Compiler.Options
+
+
+Cython.Compiler.Options.annotate = True
 
 ## CONFIG
-target_version = '3.1.0'
+target_version = '4.0.0'
 
 
 def version_info(target_version):
@@ -118,5 +123,6 @@ setup(
     include_package_data=True,
     zip_safe=True,
     tests_require=['pytest'],
-    cmdclass={'test': PyTest}
+    cmdclass={'test': PyTest},
+    ext_modules=cythonize('intervaltree/intervaltree.pyx', annotate=True),
 )

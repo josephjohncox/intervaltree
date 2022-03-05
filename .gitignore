@@ -31,3 +31,7 @@ bin/
 # Other temps
 restats
 
+*.so
+*.a
+*.lib
+*.o

@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+1#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 """
@@ -22,22 +22,16 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 """
-from .interval import Interval
-from .node import Node
-from numbers import Number
-from sortedcontainers import SortedDict
 from copy import copy
 from warnings import warn
+from pprint import pprint
+from collections.abc import MutableSet
+from numbers import Number
 
-try:
-    from collections.abc import MutableSet  # Python 3?
-except ImportError:
-    from collections import MutableSet
+from sortedcontainers import SortedDict
 
-try:
-    xrange  # Python 2?
-except NameError:  # pragma: no cover
-    xrange = range
+from .interval import Interval
+from .node import Node
 
 
 # noinspection PyBroadException
@@ -900,7 +894,7 @@ class IntervalTree(MutableSet):
         bound_end = boundary_table.bisect_left(end)  # up to, but not including end
         result.update(root.search_overlap(
             # slice notation is slightly slower
-            boundary_table.keys()[index] for index in xrange(bound_begin, bound_end)
+            boundary_table.keys()[index] for index in range(bound_begin, bound_end)
         ))
 
         # TODO: improve envelop() to use node info instead of less-efficient filtering
@@ -934,7 +928,7 @@ class IntervalTree(MutableSet):
         bound_end = boundary_table.bisect_left(end)  # up to, but not including end
         result.update(root.search_overlap(
             # slice notation is slightly slower
-            boundary_table.keys()[index] for index in xrange(bound_begin, bound_end)
+            boundary_table.keys()[index] for index in range(bound_begin, bound_end)
         ))
         return result
 
@@ -1008,10 +1002,6 @@ class IntervalTree(MutableSet):
                 )
                 tivs = set(self.top_node.all_children())
                 print('top_node.all_children() - all_intervals:')
-                try:
-                    pprint
-                except NameError:
-                    from pprint import pprint
                 pprint(tivs - self.all_intervals)
                 print('all_intervals - top_node.all_children():')
                 pprint(self.all_intervals - tivs)
@@ -1215,4 +1205,3 @@ class IntervalTree(MutableSet):
         :rtype: tuple
         """
         return IntervalTree, (sorted(self.all_intervals),)
-
