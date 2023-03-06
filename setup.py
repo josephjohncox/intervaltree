@@ -31,12 +31,26 @@ from sys import exit
 from distutils.core import setup
 from setuptools.command.test import test as TestCommand
 import subprocess
-from Cython.Build import cythonize
-import Cython.Compiler.Options
 
+# See if Cython is installed
+try:
+    from Cython.Build import cythonize
+# Do nothing if Cython is not available
+except ImportError:
+    # Got to provide this function. Otherwise, poetry will fail
+    def build(setup_kwargs):
+        pass
 
-Cython.Compiler.Options.annotate = True
+    extensions = []
+# Cython is installed. Compile
+else:
+    from Cython.Build import cythonize
+    import Cython.Compiler.Options
 
+    Cython.Compiler.Options.annotate = True
+    extensions = cythonize('intervaltree/intervaltree.pyx', annotate=True)
+
+    
 ## CONFIG
 target_version = '4.0.0'
 
@@ -86,7 +100,7 @@ class PyTest(TestCommand):
 setup(
     name='intervaltree',
     version=vinfo['version'],
-    install_requires=['sortedcontainers >= 2.0, < 3.0'],
+    install_requires=['sortedcontainers >= 2.0, < 3.0', 'cython'],
     description='Editable interval tree data structure for Python 2 and 3',
     long_description=long_description,
     long_description_content_type='text/markdown',
@@ -124,5 +138,5 @@ setup(
     zip_safe=True,
     tests_require=['pytest'],
     cmdclass={'test': PyTest},
-    ext_modules=cythonize('intervaltree/intervaltree.pyx', annotate=True),
+    ext_modules=extensions,
 )
